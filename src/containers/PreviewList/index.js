@@ -48,6 +48,7 @@ const PreviewList = () => {
     } else {
       notification.error({
         message: 'Get list failed',
+        placement: 'bottomRight',
       });
     }
   };
@@ -61,6 +62,7 @@ const PreviewList = () => {
     } else {
       notification.error({
         message: 'Get suggestion failed',
+        placement: 'bottomRight',
       });
     }
   };
@@ -75,11 +77,13 @@ const PreviewList = () => {
       getSuggestionAPI();
       notification.success({
         message: 'Create suggestion successfully',
+        placement: 'bottomRight',
       });
     } else {
       setSpinning(false);
       notification.error({
         message: 'Create suggestion failed',
+        placement: 'bottomRight',
       });
     }
   };
@@ -91,7 +95,7 @@ const PreviewList = () => {
 
   const onSaveAPI = async (newRow) => {
     setSpinning(true);
-    const pos = input.findIndex((item) => item.id === newRow.id);
+    const pos = input.findIndex((item) => item.No === newRow.No);
     input.splice(pos, 1, newRow);
     const response = await axios.post(`${WEB_API}/output`, {
       data: input,
@@ -100,11 +104,13 @@ const PreviewList = () => {
       setSpinning(false);
       notification.success({
         message: 'Save successfully',
+        placement: 'bottomRight',
       });
     } else {
       setSpinning(false);
       notification.error({
         message: 'Save failed',
+        placement: 'bottomRight',
       });
     }
   };
