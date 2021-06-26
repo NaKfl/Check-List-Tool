@@ -2,7 +2,7 @@ import { Divider, Row, Table } from 'antd';
 import { EmbeddedPost, FacebookProvider } from 'react-facebook';
 
 const Preview = (props) => {
-  const { row, suggestions } = props;
+  const { row } = props;
 
   const link = row?.Link;
 

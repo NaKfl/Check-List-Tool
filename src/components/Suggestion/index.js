@@ -1,5 +1,6 @@
 import { Button, Checkbox, Divider, Form, Input, Row } from 'antd';
 import { useEffect, useState } from 'react';
+import './styles.scss';
 const { TextArea, Search } = Input;
 
 const Suggestion = (props) => {
@@ -11,13 +12,18 @@ const Suggestion = (props) => {
     if (row?.Note) {
       const values = row?.Note;
       setPreviewNote(values);
-      const contents = values.split(',');
-      const newSuggestions = suggestions
-        ?.filter((item) => contents.includes(item.content))
-        .map((item) => item.id);
-      form.setFieldsValue({ suggestions: newSuggestions });
+    } else {
+      setPreviewNote('');
     }
   }, [form, row?.Note, suggestions]);
+
+  useEffect(() => {
+    const contents = previewNote.split(',');
+    const newSuggestions = suggestions
+      ?.filter((item) => contents.includes(item.content))
+      .map((item) => item.id);
+    form.setFieldsValue({ suggestions: newSuggestions });
+  }, [form, previewNote, suggestions]);
 
   const onClickCheckbox = (event) => {
     const id = event.target.value;
@@ -35,11 +41,6 @@ const Suggestion = (props) => {
   const onTextAreaChange = (event) => {
     const values = event.target.value;
     setPreviewNote(values);
-    const contents = values.split(',');
-    const newSuggestions = suggestions
-      ?.filter((item) => contents.includes(item.content))
-      .map((item) => item.id);
-    form.setFieldsValue({ suggestions: newSuggestions });
   };
 
   const handleSubmit = () => {
@@ -47,6 +48,9 @@ const Suggestion = (props) => {
     onSave(newRow);
   };
 
+  const handleClear = () => {
+    setPreviewNote('');
+  };
   return (
     <>
       {suggestions && (
@@ -78,14 +82,19 @@ const Suggestion = (props) => {
               onChange={onTextAreaChange}
             />
             <Divider />
-            <Button
-              type="primary"
-              size="large"
-              className="save-btn"
-              onClick={handleSubmit}
-            >
-              Save
-            </Button>
+            <Row>
+              <Button size="large" className="btn" onClick={handleClear}>
+                Clear
+              </Button>
+              <Button
+                type="primary"
+                size="large"
+                className="btn"
+                onClick={handleSubmit}
+              >
+                Save
+              </Button>
+            </Row>
           </Form>
         </>
       )}
