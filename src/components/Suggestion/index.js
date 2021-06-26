@@ -1,10 +1,23 @@
 import { Button, Checkbox, Divider, Form, Input, Row } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 const { TextArea, Search } = Input;
 
 const Suggestion = (props) => {
-  const { suggestions, createSuggestion } = props;
+  const [form] = Form.useForm();
+  const { row, suggestions, createSuggestion, onSave } = props;
   const [previewNote, setPreviewNote] = useState('');
+
+  useEffect(() => {
+    if (row?.Note) {
+      const values = row?.Note;
+      setPreviewNote(values);
+      const contents = values.split(',');
+      const newSuggestions = suggestions
+        ?.filter((item) => contents.includes(item.content))
+        .map((item) => item.id);
+      form.setFieldsValue({ suggestions: newSuggestions });
+    }
+  }, [form, row?.Note, suggestions]);
 
   const onClickCheckbox = (event) => {
     const id = event.target.value;
@@ -15,12 +28,23 @@ const Suggestion = (props) => {
         const newContent =
           prev.slice(0, pos) + prev.slice(pos + existedContent.length + 1);
         return newContent;
-      } else return `${prev}${existedContent};`;
+      } else return `${prev}${existedContent},`;
     });
   };
 
   const onTextAreaChange = (event) => {
-    setPreviewNote(event.target.value);
+    const values = event.target.value;
+    setPreviewNote(values);
+    const contents = values.split(',');
+    const newSuggestions = suggestions
+      ?.filter((item) => contents.includes(item.content))
+      .map((item) => item.id);
+    form.setFieldsValue({ suggestions: newSuggestions });
+  };
+
+  const handleSubmit = () => {
+    const newRow = { ...row, Note: previewNote };
+    onSave(newRow);
   };
 
   return (
@@ -34,7 +58,7 @@ const Suggestion = (props) => {
             onSearch={(value) => createSuggestion(value)}
           />
           <Divider />
-          <Form>
+          <Form form={form}>
             <Form.Item name="suggestions">
               <Checkbox.Group>
                 {suggestions.map((item) => (
@@ -54,7 +78,12 @@ const Suggestion = (props) => {
               onChange={onTextAreaChange}
             />
             <Divider />
-            <Button type="primary" size="large" className="save-btn">
+            <Button
+              type="primary"
+              size="large"
+              className="save-btn"
+              onClick={handleSubmit}
+            >
               Save
             </Button>
           </Form>

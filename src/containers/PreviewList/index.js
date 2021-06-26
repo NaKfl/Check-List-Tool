@@ -89,6 +89,26 @@ const PreviewList = () => {
     return row;
   };
 
+  const onSaveAPI = async (newRow) => {
+    setSpinning(true);
+    const pos = input.findIndex((item) => item.id === newRow.id);
+    input.splice(pos, 1, newRow);
+    const response = await axios.post(`${WEB_API}/output`, {
+      data: input,
+    });
+    if (response?.data) {
+      setSpinning(false);
+      notification.success({
+        message: 'Save successfully',
+      });
+    } else {
+      setSpinning(false);
+      notification.error({
+        message: 'Save failed',
+      });
+    }
+  };
+
   useEffect(() => {
     getInputAPI();
     getSuggestionAPI();
@@ -114,8 +134,10 @@ const PreviewList = () => {
             </Col>
             <Col className="gutter-row" span={8}>
               <Suggestion
+                row={getRowFromNo(currentNo)}
                 suggestions={suggestions}
                 createSuggestion={createSuggestionAPI}
+                onSave={onSaveAPI}
               />
             </Col>
             <Col className="gutter-row" span={4}>

@@ -3,7 +3,6 @@ import { EmbeddedPost, FacebookProvider } from 'react-facebook';
 
 const Preview = (props) => {
   const { row, suggestions } = props;
-  console.log('suggestions', suggestions);
 
   const link = row?.Link;
 
